@@ -452,13 +452,34 @@ public:
 		btVector3 planeOrigin = planeNormal * planeConst;
 		btVector3 vec0, vec1;
 		btPlaneSpace1(planeNormal, vec0, vec1);
-		btScalar vecLen = 100.f;
-		btVector3 pt0 = planeOrigin + vec0 * vecLen;
-		btVector3 pt1 = planeOrigin - vec0 * vecLen;
-		btVector3 pt2 = planeOrigin + vec1 * vecLen;
-		btVector3 pt3 = planeOrigin - vec1 * vecLen;
+		
+		btScalar vecLen = 10.f;
+
+		vec0 *= vecLen;
+		vec1 *= vecLen;
+
+		const btVector3 c0 =  vec0 + vec1;
+		const btVector3 c1 =  vec0 - vec1;
+		const btVector3 c2 = -vec0 - vec1;
+		const btVector3 c3 = -vec0 + vec1;
+
+		const btVector3 pt0 = planeOrigin + c0;
+		const btVector3 pt1 = planeOrigin - c0;
+		const btVector3 pt2 = planeOrigin + c1;
+		const btVector3 pt3 = planeOrigin - c1;
+
+		// cross in middle
 		drawLine(transform * pt0, transform * pt1, color);
 		drawLine(transform * pt2, transform * pt3, color);
+
+		// frame
+		drawLine(transform * c0, transform * c1, color);
+		drawLine(transform * c1, transform * c2, color);
+		drawLine(transform * c2, transform * c3, color);
+		drawLine(transform * c3, transform * c0, color);
+
+		// plane normal
+		drawLine(transform * planeOrigin, transform * (planeOrigin + planeNormal * vecLen), color);
 	}
 
 	virtual void clearLines()
